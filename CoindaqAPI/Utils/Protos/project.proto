@@ -1,0 +1,582 @@
+syntax = "proto3";
+
+package proto;
+
+import "common.proto";
+
+/**
+* 项目相关API
+*/
+service ProjectService {
+	//根据Id查询项目 - GET
+    rpc QueryProjectById (IdReq) returns (ProjectInfoReply) {}
+
+    //查询用户参与项目 - GET
+    rpc QueryUserParticipationProject(IdReq) returns (ProjectListReply) {}
+
+    //查询项目图片信息 - GET
+    rpc QueryProjectPhotosInfo(IdReq) returns (MediaListReply) {}
+
+    //查询项目视频信息 - GET
+    rpc QueryProjectVideosInfo(IdReq) returns (MediaListReply) {}
+
+    //查询项目具体描述信息 - GET
+    rpc QueryProjectDescriptionInfo (IdReq) returns (ProjectDescriptionListReply) {}
+
+    //查询项目勋章信息 - GET
+    rpc QueryProjectCertificationInfo (IdReq) returns (CertificationListReply) {}
+
+    //查询项目成员信息 - GET
+    rpc QueryProjectMembersInfo (IdReq) returns (MemberListReply) {}
+
+    //查询项目阶段信息 - GET
+    rpc QueryProjectStagesInfo (IdReq) returns (StageListReply) {}
+
+    //多条件查询项目阶段信息 - GET
+    rpc FilterProjectStageInfo (StageFilterReq) returns (StageInfoReply) {}
+
+    //查询项目募资币种信息 - GET
+    rpc QueryStageCoinInfo (IdReq) returns (StageCoinListReply) {}
+
+    //查询项目具体币种募集信息 - GET
+    rpc FilterStageCoinInfo (StageCoinFilterReq) returns (StageCoinReply) {}
+
+    //查询项目公告信息 - GET
+    rpc QueryProjectNoticesByFilter(NoticeFilterReq) returns (NoticeInfoListReply) {}
+
+    //查询项目投票信息 - GET
+    rpc QueryProjectNoticeVoteInfo(IdReq) returns (NoticeVoteReply) {}
+
+    //检查用户提案投票权限 - GET
+    rpc CheckUserCanVoteNotice(NoticeRightReq) returns (BoolReply) {}
+
+    //用户提案投票 - POST
+    rpc UserNoticeVote(UserVoteReq) returns (Empty) {}
+
+    //参与项目ico - POST
+    rpc JoinProjectIco(IcoOrderReq) returns (IcoInfoReply) {}
+
+    //查询用户是否通过Kyc审核 - GET
+    rpc CheckUserKycStatusInfo(IdReq) returns (BoolReply) {}
+
+    //查询推荐项目 - GET
+    rpc QueryRecommendProjectsInfo (Empty) returns (RecommendProjectListReply) {}
+
+    //查询用户参与项目 - GET
+    rpc QueryUserJoinProjectsInfo (IdReq) returns (RecommendProjectListReply) {}
+
+    //查询项目详情 - GET
+    rpc QueryProjectDetailsInfo (IdReq) returns (ProjectDetailsReply) {}
+
+    //查询募集细则 - GET
+    rpc QueryRaiseInvestmentDetailsInfo (IdReq) returns (RaiseRuleReply) {}
+
+    //查询项目公告列表 - GET
+    rpc QueryProjectNoticesInfo (IdReq) returns (ProjectNoticeListReply) {}
+
+    //查询公告详情 - GET
+    rpc QueryProjectNoticeNewsDetailsInfo (IdReq) returns (NoticeNewsReply) {}
+
+    //查询投票详情 - GET
+    rpc QueryNoticeVoteDetailsInfo (NoticeRightReq) returns (NoticeVoteDetailReply) {}
+}
+
+//媒体信息类型
+enum MediaType {
+    MeNotSet = 0; //未设置
+    PhotoType = 1; //图片类型
+    VediaType = 2; //视频类型
+}
+
+//项目状态类型
+enum Status {
+    NotStart = 0; //未开始
+    Started = 1; //已启动
+    Completed = 2; //已完成
+}
+
+//公告类型
+enum NoticeType {
+    NNotSet = 0; //未设置
+    NewsType = 1; //普通公告类型
+    VoteType = 2; //投票公告类型
+}
+
+//公告发送类型
+enum NoticeSendType {
+    SNotSet = 0; //未设置
+    SendAll = 1; //发送所有人
+    SendParticipant = 2; //发送参与者
+}
+
+//Notice审核状态
+enum NoticeStateType {
+    NoticeSubmit = 0; //审核中
+    SubmitPassed = 1; //审核通过
+    SubmitRejected = 2; //审核拒绝
+}
+
+//投票类型
+enum VoteResultType {
+    NotVote = 0; //未投票
+    ApproveVote = 1; //赞成票
+    DisApproveVote = 2; //反对票
+    AbstentionVote = 3; //弃权票
+}
+
+enum NoticeResultType {
+    NrNotSet = 0; //未设置
+    NoticeSuccess = 1; //提案通过
+    NoticeFail = 2; //提案失败
+}
+
+//项目人员类型
+enum MemberType {
+    MUnSet = 0;
+    Admin = 1; //管理员
+    Partner = 2; //合伙人
+    Investor = 3; //投资者
+}
+
+//Request Information
+message StageFilterReq {
+    int64 projectId = 1; //项目Id
+    int32 stageNumber = 2; //阶段序号
+}
+
+
+//公告筛选
+message NoticeFilterReq {
+    int64 projectId = 1; //项目Id
+    NoticeType noticeType = 2; //公告类型
+    NoticeStateType noticeState = 3; //公告状态
+}
+
+//公告权限
+message NoticeRightReq {
+    int64 noticeId = 1; //公告Id
+    int64 userId = 2; //用户Id
+}
+
+//Ico订单信息
+message IcoOrderReq {
+    int64 projectId = 1; //项目Id
+    int64 userId = 2; //用户Id
+    int64 payCount = 3; //花费数量
+    int32 stageNumber = 4; //购买阶段
+    string currencyId = 5; //货币Id
+}
+
+//投票信息
+message UserVoteReq {
+    int64 noticeId = 1; //公告Id
+    int64 userId = 2; //用户Id
+    VoteResultType voteType = 3; //投票类型
+}
+
+//勋章信息
+message CertificationInfoReply {
+    int64 id = 1;
+    string name = 2; //勋章名称
+    string description = 3; //勋章描述
+    string imageUrl = 4; //勋章图标链接
+    int32 prioritySort = 5; //勋章排序优先级
+}
+
+//Certification List info
+message CertificationListReply {
+    repeated CertificationInfoReply CertificationList = 1 ;
+}
+
+//Project
+
+message ProjectStatusReq {
+    int64 projectId = 1;
+    Status status = 2; //项目状态
+}
+
+message ProjectInfoReq {
+    int64 projectId = 1; //项目Id
+    string summary = 2; //项目概览
+    string description = 3; //项目具体描述
+    string commany = 4; //公司名称
+    string endTime = 5; //结束时间
+}
+
+message ProjectInvestmentReq {
+    int64 projectId = 1;
+    int32 stageNumber = 2;
+}
+
+message UserInvestmentReq {
+    int64 userId = 1;
+}
+
+//NoticeNews
+message NewNoticeReq {
+    int64 projecId = 1;
+    string title = 2;
+    string description = 3;
+    BoolValue status = 4;
+    string expireTime = 5;
+}
+
+message NoticeInfoReq {
+    int64 projectId = 1;
+    BoolValue status = 2;
+}
+
+message NoticeUpdateReq {
+    int64 id = 1;
+    string title = 2;
+    string description = 3;
+    BoolValue status = 4;
+    string expireTime = 5;
+}
+
+message StageCoinFilterReq {
+    int64 stageId = 1; //Stage Id
+    string coinId = 2; //Coin Id
+}
+
+//Reply Information
+
+message NewProjectReply {
+    int64 id = 1;
+}
+
+message ProjectInfoReply {
+    int64 id = 1;
+    int64 adminId = 2;
+    string summary = 3;
+    int64 targetValue = 4;
+    string issueCoina = 5;
+    string issueCoinb = 6;
+    int32 stageCount = 7;
+    string classify = 8;
+    string whitePaper = 9;
+    string officeSite = 10;
+    string communityAddress = 11;
+    Status status = 12;
+    int32 prioritySort = 13;
+    string createTime = 14;
+    string beginTime = 15;
+    string endTime = 16;
+    string updateTime = 17;
+}
+
+message ProjectListReply {
+    repeated ProjectInfoReply projectList = 1;
+}
+
+//项目阶段信息
+message StageInfoReply {
+    int64 id = 1;
+    int64 projectId = 2; //项目Id
+    int32 stageNumber = 3; //阶段序号
+    string stageName = 4; //阶段名称
+    int32 coinCount = 5; //募集币种类
+    int64 targetValue = 6; //募资总额
+    int64 softValue = 7; //募资软顶
+    string discount = 8; //折扣
+    int64 completeValue = 9; //完成金额
+    Status stageStatus = 10; //阶段状态
+    string beginTime = 11; //开始时间
+    string endTime = 12; //结束时间
+    string createTime = 13; //创建时间
+    string updateTime = 14; //更新时间
+}
+
+//项目阶段列表信息
+message StageListReply {
+    repeated StageInfoReply stageList = 1;
+}
+
+//募集币种信息
+message StageCoinReply {
+    int64 stageId = 1; //Stage Id
+    string coinId = 2; //Coin Id
+    string coinName = 3; //Coin Name
+    int64 completeValue = 4; //募集金额
+    int64 minValue = 5; //投资最小金额
+    int64 maxValue = 6; //投资最大金额
+    int64 price = 7; //价格
+    string createTime = 8; //创建时间
+    string updateTime = 9; //更新时间
+}
+
+message StageCoinListReply {
+    repeated StageCoinReply stageCoinList = 1;
+}
+
+message InvestmentReply {
+    int64 id = 1;
+    int64 userId = 2;
+    int64 projectId = 3;
+    int32 stageNumber = 4;
+    int32 investmentValue = 5;
+    string investmentType = 6;
+    string walletPath = 7;
+    BoolValue investmentStatus = 8;
+    string createTime = 9;
+    string updateTime = 10;
+}
+
+message InvestmentListReply {
+    repeated InvestmentReply investmentList = 1;
+}
+
+//项目描述信息
+message ProjectDescriptionInfoReply {
+    int64 projectId = 1; //项目Id
+    string title = 2; //段落标题
+    string projectText = 3; //段落内容
+    BoolValue enable = 4; //是否删除，不显示
+    int32 prioritySort = 5; //段落排序
+    string createTime = 6; //创建时间
+    string updateTime = 7; //更新时间
+}
+
+message ProjectDescriptionListReply {
+    repeated ProjectDescriptionInfoReply projectDescriptionList = 1;
+}
+
+//项目成员信息
+message MemeberReply {
+    int64 id = 1;
+    int64 projectId = 2; //项目Id
+    string name = 3; //成员姓名
+    string position = 4; //成员职位
+    string description = 5; //成员信息描述
+    MemberType memberType = 6; //成员类型
+    string imageUrl = 7; //成员头像Url
+    int32 prioritySort = 8; //成员排序优先级
+    string joinTime = 9; //成员加入时间
+}
+
+message MemberListReply {
+    repeated MemeberReply memberList = 1;
+}
+
+//公告信息
+message NoticeInfoReply {
+    int64 noticeId = 1; //公告Id
+    int64 projectId = 2; //项目Id
+    string title = 3; //公告名称
+    string briefIntroduction = 4; //公告简要介绍
+    string description = 5; //公告详细描述
+    NoticeType noticeType = 6; //公告类型，普通公告或投票类型公告
+    NoticeSendType sendType = 7; //公告发送类型
+    NoticeStateType status = 8; //公告审核状态
+    string reason = 9; //公告审核原因
+    string createTime = 10; //公告创建时间
+    string expireTime = 11; //公告过期时间
+    string updateTime = 12; //公告更新时间
+}
+
+message NoticeInfoListReply {
+    repeated NoticeInfoReply noticeList = 1;
+}
+
+//提案投票信息
+message NoticeVoteReply {
+    int64 noticeId = 1; //提案Id
+    int64 approveVote = 2; //赞成票
+    int64 disapproveVote = 3; //反对票
+    int64 abstentionVote = 4; //弃权票
+    int64 platformVoteMax = 5; //平台最高投票额
+    int64 platformVoteVolumn = 6; //平台实际投票额
+    VoteResultType platformVoteType = 7; //平台投票类型
+    string platformVoteReason = 8; //平台投票原因
+    string platformVoteTime = 9; //平台投票时间
+    NoticeResultType voteResult = 10; //平台投票结果
+    string createTime = 11; //投票创建时间
+    string updateTime = 12; //投票更新时间
+    string beginTime = 13; //投票开始时间
+    string endTime = 14; //投票结束时间
+    int64 totalVotes = 15; //提案总票数
+}
+
+//提案用户投票详情
+message VoteDetailsReply {
+    int64 noticeId = 1; //公告Id
+    int64 userId = 2; //用户Id
+    VoteResultType voteType = 3; //投票类型
+    int64 voteVolumn = 4; //投票数量
+    string createTime = 5; //创建时间
+}
+
+message VoteDetailsListReply {
+    repeated VoteDetailsReply voteDetailsList = 1 ;
+}
+
+//媒体信息
+message MediaInfoReply {
+    int64 projectId = 1; //项目Id
+    string title = 2; //媒体标题
+    string address = 3; //媒体Url
+    MediaType type = 4; //媒体类型
+    BoolValue enable = 5; //是否显示，删除
+    int32 prioritySort = 6; //排序优先级
+    string createTime = 7; //创建时间
+}
+
+message MediaListReply {
+    repeated MediaInfoReply mediaList = 1;
+}
+
+//推荐项目
+message RecommendProjectReply {
+    int64 projectId = 1;
+    string imageUrl = 2; //项目图片
+    string summary = 3; //项目名称
+    string description = 4; //项目描述
+    int32 projectStatus = 5; //项目状态
+}
+
+message RecommendProjectListReply {
+    repeated RecommendProjectReply ProjectList = 1;
+}
+
+message ProjectCoinReply {
+    string coinName = 1; //货币名称
+    int64 targetValue = 2; //募集金额
+    int64 completeValue = 3; //完成金额
+    int64 minValue = 4; //限制最小金额
+    int64 maxValue = 5; //限制最大金额
+}
+
+message ProjectStageReply {
+    string stageName = 1; //阶段名称
+    string discountInfo = 2; //折扣信息
+    int32 leftTime = 3; //剩余时间
+    int64 minValue = 4; //最小投资金额
+    int64 maxValue = 5; //最大投资金额
+    repeated ProjectCoinReply coinInfoList = 6; //数字货币种类
+}
+
+message ProjectDescription {
+    string title = 1;
+    string content = 2;
+    int32 priority_sort = 3;
+}
+
+message TeamMember {
+    string imageUrl = 1; //头像
+    string name = 2; //名称
+    string position = 3; //职位
+    string personalInfo = 4; //个人介绍
+    int32 priority_sort = 5; //排序
+}
+
+message ProjectDetailsReply {
+    string imageUrl = 1; //项目图片
+    int32 status = 2; //项目状态
+    string summary = 3; //项目名称
+    string coinId = 4; //项目币Id
+    string coinName = 5; //项目币名称
+    string description = 6; //项目描述
+    repeated string certificationList = 7; //勋章信息
+    repeated SellStageReply sellStageList = 8; //预售期信息
+    repeated ProjectDescription projectContent = 9; //介绍信息
+    repeated TeamMember memberList = 10; //团队成员
+    BoolValue canJoin = 11; //是否可以参与
+}
+
+//预售期时间
+message SellStageReply {
+    string name = 1; //阶段名称
+    string endTime = 2; //结束时间
+    int32 leftDays = 3; //剩余天数
+    string discount = 4; //折扣信息
+    repeated ProjectCoinReply coinInfo = 5; //募币信息
+}
+
+//募集阶段
+message RaiseStageReply {
+    string name = 1; //阶段名称
+    string beginTime = 2; //开始时间
+    string endTime = 3; //结束时间
+    string targetInfo = 4; //募集目标
+    string discount = 5; //折扣
+    repeated ProjectCoinReply CoinList = 6; //募集币种信息
+}
+
+//募集细则
+message RaiseRuleReply {
+    string currencyName = 1; //代码
+    int64 softTarget = 2; //软顶
+    int64 hardTarget = 3; //硬顶
+    int64 totalTarget = 4; //募资总额
+    repeated RaiseStageReply stageList = 5; //募集阶段集合
+}
+
+//公告
+message ProjectNoticeReply {
+    int64 noticeId = 1; //公告Id
+    string noticeTitle = 2; //标题
+    string description = 3; //描述
+    NoticeType type = 4; //类型
+    string createTime = 5; //创建时间
+}
+
+message ProjectNoticeListReply {
+    repeated ProjectNoticeReply NoticeList = 1;
+}
+
+//项目详情公告
+message NoticeNewsReply {
+    string projectName = 1; //项目名称
+    string createTime = 2; //创建时间
+    string noticeTitle = 3; //投票标题
+    string noticeContent = 4; //投票内容
+    string imageUrl = 5; //图片Url
+    int32 imageWidth = 6; //图片宽度
+    int32 imageHeight = 7; //图片高度
+    string urlSite = 8; //网页链接
+}
+
+message NoticeVoteDetailReply {
+    string projectName = 1; //项目名称
+    string createTime = 2; //创建时间
+    string noticeTitle = 3; //投票标题
+    string noticeContent = 4; //投票内容
+    string imageUrl = 5; //图片Url
+    int32 imageWidth = 6; //图片宽度
+    int32 imageHeight = 7; //图片高度
+    string urlSite = 8; //网页链接
+    int64 myVoteVolumn = 9; //我的投票数量
+    VoteResultType myVoteType = 10; //我的投票类型
+    string endTime = 11; //截止时间
+    int64 approveVolumn = 12; //赞成票
+    int64 disapproveVolumn = 13; //反对票
+    int64 abstensionVolumn = 14; //弃权票
+    int64 totalVote = 15; //总投票额
+    Status voteStatus = 16; //提案投票状态
+    NoticeResultType NoticeResult = 17; //提案投票结果
+    string NoticeComments = 18; //提案投票说明
+}
+
+message IcoReply {
+    string currencyName = 1; //投资币种
+    int64 balanceValue = 2; //可用余额
+    int64 price = 3; //价格
+    int64 minValue = 4; //最小限额
+    int64 maxValue = 5; //最大限额
+    string discount = 6; //折扣
+}
+
+message JoinOrderReply {
+    repeated IcoReply IcoList = 1;
+}
+
+message IcoInfoReply {
+    int64 userId = 1; //用户Id
+    int64 projectId = 2; //项目Id
+    int64 stageId = 3; //阶段Id
+    int64 price = 4; //价格
+    int64 payAmount = 5; //付出数量
+    string baseCoin = 6; //付出货币
+    string targetCoin = 7; //获得币
+    int32 lockType = 8; //锁定状态
+}

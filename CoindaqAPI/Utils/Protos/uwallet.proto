@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package proto;
+
+import "common.proto";
+
+/**
+ * User Wallet Service Grpc API
+ */
+service UserWalletService {
+    //绑定用户充币地址[POST]
+    rpc BindUserCoinAddress (UserCoinAddressReq) returns (Empty) {}
+
+    //查询用户充币地址[GET]
+    rpc QueryUserCoinAddress (UserCoinAddressReq) returns (UserCoinListReply) {}
+
+    //添加用户钱包地址[POST]
+    rpc AddWalletAddress (WalletAddressReq) returns (Empty) {}
+
+    //查询用户钱包地址[GET]
+    rpc QueryUserWalletAddress (WalletAddressReq) returns (WalletAddressListReply) {}
+
+    //删除用户钱包地址[POST]
+    rpc DeleteUserWalletAddress (IdReq) returns (Empty) {}
+
+    //平台钱包信息查询
+    rpc QueryUserBalanceByFilter(UserCoinAddressReq) returns (UserBalanceListReply) {}
+}
+
+//Bind User Coin Address
+message UserCoinAddressReq {
+    int64 userId = 1; //用户Id
+    string coinId = 2; //币种
+}
+
+//Wallet Address
+message WalletAddressReq {
+    int64   userId = 1; //用户Id
+    string  currencyName = 2; //货币名称
+    string walletAddress = 3; //钱包地址
+}
+
+//用户充币地址信息
+message UserCoinAddressReply {
+    string balanceId = 1; //Balance Id(udid)
+    string userId = 2; //用户Id
+    string currencyId = 3; //货币代码
+    int64 balanceValue = 4; //金额
+    string rechargeAddress = 5; //充币地址
+    string QRCodeAddress = 6; //充币地址二维码
+}
+
+//用户充币地址列表信息
+message UserCoinListReply {
+    repeated UserCoinAddressReply userCoinList = 1; //充币地址列表
+}
+
+//Wallet Address Info
+message WalletAddressInfoReply {
+    int64       id = 1;
+    int64       userId = 2; //用户Id
+    string      currencyName = 3; //货币名称
+    string      walletAddress = 4; //钱包地址
+    string      createTime = 5; //创建时间
+    string      updateTime = 6; //更新时间
+}
+
+//Wallet Address Info List
+message WalletAddressListReply {
+    repeated WalletAddressInfoReply AddressList = 1;
+}
+
+//User Balance Info
+message UserBalanceReply {
+    string balanceId = 1; //Balance Id
+    string userId = 2; //用户Id
+    string currencyId = 3; //货币Id
+    int64 balanceValue = 4; //余额数字
+    string rechargeAddress = 5; //充币地址
+    string qrcodeAddress = 6; //二维码地址
+    int64 totalBalance = 7; //账户总额
+    int64 chargeUnAccount = 8; //充值未到账
+    int64 withdrawUnTransfer = 9; //提现未转出
+    int64 lockPosition = 10; //锁仓不可卖
+    int64 icoUndue = 11; //ico未到期
+}
+
+message UserBalanceListReply {
+    repeated UserBalanceReply BalanceList = 1;
+}

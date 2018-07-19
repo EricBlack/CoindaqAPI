@@ -1,0 +1,1 @@
+﻿This dir is used to save QR code image files.

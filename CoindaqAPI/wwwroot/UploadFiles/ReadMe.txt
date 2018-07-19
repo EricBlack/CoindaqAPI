@@ -1,0 +1,1 @@
+﻿This directory is used to save upload files.

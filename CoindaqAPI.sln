@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoindaqAPI", "CoindaqAPI\CoindaqAPI.csproj", "{ADCF8828-9572-4D73-8E27-2120FAC25ABD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoindaqTest", "CoindaqTest\CoindaqTest.csproj", "{096806D3-95BA-4E2C-B295-BF4D3FD83C89}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{13D1D082-AC58-4A35-BB43-7F63D96CB108}"
+	ProjectSection(SolutionItems) = preProject
+		Deploy.sh = Deploy.sh
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADCF8828-9572-4D73-8E27-2120FAC25ABD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADCF8828-9572-4D73-8E27-2120FAC25ABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADCF8828-9572-4D73-8E27-2120FAC25ABD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADCF8828-9572-4D73-8E27-2120FAC25ABD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{096806D3-95BA-4E2C-B295-BF4D3FD83C89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{096806D3-95BA-4E2C-B295-BF4D3FD83C89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{096806D3-95BA-4E2C-B295-BF4D3FD83C89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{096806D3-95BA-4E2C-B295-BF4D3FD83C89}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7ECEDA84-8B04-4640-9C58-B00C6000067D}
+	EndGlobalSection
+EndGlobal

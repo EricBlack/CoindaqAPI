@@ -1,0 +1,363 @@
+syntax = "proto3";
+
+package proto;
+
+import "common.proto";
+import "two_factor.proto";
+
+//1.Service
+/**
+ * User Service Grpc API
+ */
+service UserService {
+    /**
+    * 注册新用户[POST]
+    */
+    rpc Signup (RegisterReq) returns (UserReply) {}
+
+    /**
+    * 登录用户[POST]
+    */
+    rpc Signin (AuthReq) returns (UserReply) {}
+
+    /**
+    * 检查用户状态 - GET
+    */
+    rpc CheckUserStatus (ForgetEmailReq) returns (UserStatusReply) {}
+
+    /**
+    * 用户token验证[POST]
+    */
+    rpc VerifyUserToken(UserReq) returns (UserReply) {}
+
+    /**
+    * 查询登录历史记录[GET]
+    */
+    rpc QueryLoginRecords (RecordFilterReq) returns (LoginRecordListReply) {}
+
+    /**
+    * 退出登录[GET]
+    */
+    rpc Logout (IdReq) returns (Empty) {}
+
+    /**
+    * 激活新用户[GET]
+    */
+    rpc ActivateNewUser (ForgetEmailReq) returns (FactorReply) {}
+
+    /**
+    * 激活用户 - 邮件接口[GET]
+    */
+    rpc ActivateEmailUser(ActivateReq) returns (Empty) {}
+
+    /**
+    * 通过邮箱找回密码[POST]
+    */
+    rpc ForgetPasswordViaEmail (ForgetEmailReq) returns (ForgetReply) {}
+
+    /**
+    * 通过手机找回密码[POST]
+    */
+    rpc ForgetPasswordViaPhone (ForgetPhoneReq) returns (ForgetReply) {}
+
+    /**
+    * 添加发送短信记录[POST]
+    */
+    rpc RecordMessageInfo (RecordMessageReq) returns (Empty) {}
+
+    /**
+    * 查询一小时内发送短信条数[GET]
+    */
+    rpc MessageInHour (ForgetPhoneReq) returns (MessageCountReply) {}
+
+    /**
+    * 重新设置密码[PUT]
+    */
+    rpc ResetPassword (ModifyPasswordReq) returns (Empty) {}
+
+    /**
+    * 更新密码[PUT]
+    */
+    rpc UpdatePassword (UpdatePasswordReq) returns (Empty) {}
+
+    /**
+    * 更新用户信息[POST]
+    */
+    rpc UpdateUserInfo (ModifyUserReq) returns (Empty) {}
+
+    /**
+    * 绑定手机号-发送短信[POST]
+    */
+    rpc SendBindMessage(SendMessageReq) returns (FactorReply) {}
+
+    /**
+    * 用户绑定手机号码[PUT]
+    */
+    rpc BindUserPhone (BindPhoneReq) returns (Empty) {}
+
+    /**
+    * 通过Id查询用户[GET]
+    */
+    rpc QueryUserById (IdReq) returns (UserReply) {}
+
+    /**
+    * 用户筛选[GET]
+    */
+    rpc QueryUsers (QueryUserReq) returns (UserListReply) {}
+
+    /**
+    * 查询用户邀请的注册用户[GET]
+    */
+    rpc QueryInvitedUsersByInvitorId (IdReq) returns (UserListReply) {}
+
+    /**
+    * 通过Id查询邀请用户[GET]
+    */
+    rpc QueryInvitorInfoById (IdReq) returns (InviterInfoReply) {}
+
+    /**
+    * 更新用户支付密码
+    */
+    rpc UpdatePaymentPassword (PaymentPasswordReq) returns (Empty) {}
+
+    /**
+    * 验证用户支付密码
+    */
+    rpc VerifyPaymentPassword (PaymentPasswordReq) returns (BoolReply) {}
+
+    /**
+    * 验证用户金融操作是否可用
+    */
+    rpc VerifyFinancialOperation (IdReq) returns (BoolReply) {}
+
+    /**
+    * 绑定用户Google二次验证
+    */
+    rpc BindUserGoogleFactor (IdReq) returns (GoogleQRCodeRelpy) {}
+
+    /**
+    * 解除绑定Google二次验证
+    */
+    rpc RemoveBindGoogleFactor (IdReq) returns (Empty) {}
+}
+
+//Enum List
+/**
+ * Login Status
+ */
+enum LoginStatus {
+    LNotSet = 0;
+    LoginPassed = 1; //登录成功
+    LoginFailed = 2; //登录失败
+}
+
+/**
+ * Message Status
+ */
+enum MsgSendStatus {
+    MNotSet = 0;
+    Success = 1; //短信发送成功
+    Failed = 2; //短信发送失败
+
+}
+
+//2.Request
+
+//Register
+message RegisterReq {
+    string email = 1; //邮箱
+    string password = 2; //密码
+    string countryCode = 3; //国家代码
+    string displayName = 4; //显示名称
+    bool enableCode = 5; //是否需要激活码注册
+    string inviteCode = 6; //邀请码
+    string registerIp = 7; //注册Ip
+    string deviceId = 8; //注册设备Id
+}
+
+//Login
+message AuthReq {
+    string email = 1; //邮箱
+    string password = 2; //密码
+    string loginIp = 3; //登录Ip
+    string deviceId = 4; //登录设备Id
+}
+
+//Login record filter
+message RecordFilterReq {
+    int64 userId = 1; //用户Id
+    LoginStatus status = 2; //登录状态
+    string loginTime = 3; //登录时间
+}
+
+//Logout
+message UserReq {
+    string token = 1; //Token
+}
+
+//Activate User
+message ActivateReq {
+    int64 userId = 1; //用户Id
+    string secret = 2; //验证码
+}
+
+//Forget Password via Email or Phone
+message ForgetEmailReq {
+    string email = 1; //邮箱
+}
+
+message ForgetPhoneReq {
+    string email = 1; //邮件
+    string phone = 2; //手机号码
+}
+
+//Modify Password
+message ModifyPasswordReq {
+    string code = 2; //验证码
+    string password = 3; //新密码
+}
+
+//Update Password
+message UpdatePasswordReq {
+    int64 id =1;
+    string oldPassword = 2; //旧密码
+    string newPassword = 3; //新密码
+}
+
+//Update User info
+message ModifyUserReq {
+    int64 id = 1;
+    string displayName = 2; //显示姓名
+    string countryCode = 3; //国家代码
+    string realName = 4; //真实姓名
+    string identityId = 5; //身份证Id
+    map<string, string> kycPhotos = 6; //认证图片信息
+    map<string, string> kycVedios = 7; //认证视频信息
+    KycStage kycStage = 8; //认证阶段
+}
+
+//Query User info
+message QueryUserReq {
+    int64 id = 1;
+    string email = 2;                       //用户邮箱
+    string displayName = 3;                 //显示姓名
+    string phoneNumber = 4;                 //手机号码
+    UserKind kind = 5;                      //用户类型
+    BoolValue activated = 6;                //是否激活
+    string countryCode = 7;                 //国家代码
+    string realName = 8;                    //真实姓名
+    BoolValue disabled = 9;                 //用户状态
+    IdentityType identityType = 10;         //证件类型
+    string identityId = 11;                 //省份证号
+    string photoFront = 12;                 //认证正面照
+    string photoBack = 13;                  //认证背面照
+    string photoHand = 14;                  //认证手持照
+}
+
+//Record Message Info
+message RecordMessageReq {
+    string destination = 1;                 //发送目标用户
+    string message = 2;                     //短信内容
+    MsgSendStatus  send_status = 3;         //发送状态
+    string return_message = 4;              //发送返回信息
+}
+
+//Send Phone message
+message SendMessageReq {
+    int64 userId = 1; //用户Id
+    string phone = 2; //电话
+}
+
+//Bind Phone info
+message BindPhoneReq {
+    int64 id = 1;
+    string phone = 2; //电话
+    string code = 3;  //验证码
+
+}
+
+//Payment Password
+message PaymentPasswordReq {
+    int64 userId = 1; //用户Id
+    string password = 2; //密码
+}
+
+//3.Response
+message UserReply {
+    int64 id = 1;
+    string email = 2; //邮箱
+    string displayName = 3; //显示姓名
+    string phoneNumber = 4; //手机号码
+    UserKind kind = 5; //用户类型
+    BoolValue activated = 6; //是否被激活
+    string countryCode = 7; //国家代码
+    string realName = 8; //真实姓名
+    BoolValue disabled = 9; //是否被禁
+    IdentityType identityType = 10; //证件类型
+    string identityId = 11; //证件Id
+    string photoFront = 12; //认证正面照
+    string photoBack = 13;  //认证背面照
+    string photoHand = 14;  //认证手持照
+    string inviteCode = 15; //邀请码
+    string registIp = 16; //注册Ip
+    string deviceId = 17; //注册设备Id
+    int32 googleIsBind = 18; //是否已经绑定Google验证
+}
+
+//Forget Password
+message ForgetReply {
+    int64 id = 1;
+    string information = 2; //手机号码或邮件
+    string secrect = 3; //验证码
+}
+
+//Update Password
+message UpdatePwdReply {
+    int64 id = 1;
+    string message = 2;
+}
+
+message UserListReply {
+    repeated UserReply users = 1;
+}
+
+message InviterInfoReply {
+    int64 id = 1;
+    int64 userId = 2;
+    int64 inviterId = 3;
+    string createAt = 4;
+}
+
+message UserStatusReply {
+    BoolValue isPhoneBind = 1; //是已以绑定手机
+    BoolValue isGoogleBind = 2; //是否已绑定Google二次验证
+    BoolValue isActivated = 3; //是否激活
+    BoolValue isDisabled = 4; //是否被禁
+    BoolValue isPayPassword = 5; //资金密码是否已设置
+    BoolValue isKycPassed = 6; //Kyc认证是否通过
+}
+
+message LoginRecordReply {
+    int64 id = 1;
+    int64 userId = 2;
+    string loginIp = 3;
+    string deviceId = 4;
+    LoginStatus status = 5;
+    string loginComment = 6;
+    string loginTime = 7;
+}
+
+message LoginRecordListReply {
+    repeated LoginRecordReply recordList = 1;
+}
+
+//用户一小时内发送短信条数信息
+message MessageCountReply {
+    int32 count = 1; //数目
+}
+
+//Google绑定二维码验证
+message GoogleQRCodeRelpy {
+    string imageUrl = 1; //绑定用户Google验证
+    string code = 2; //绑定用户code
+}

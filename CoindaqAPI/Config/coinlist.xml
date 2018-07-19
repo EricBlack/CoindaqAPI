@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<CoinCollection>
+  <Coin>
+    <Id>1</Id>
+    <Name>Bitcoin</Name>
+    <Tag>BTC</Tag>
+    <Convert>
+      <Info>CNY</Info>
+      <Info>BCH</Info>
+      <Info>ETH</Info>
+    </Convert>
+  </Coin>
+  <Coin>
+    <Id>1027</Id>
+    <Name>Ethereum</Name>
+    <Tag>ETH</Tag>
+    <Convert>
+      <Info>CNY</Info>
+      <Info>BCH</Info>
+      <Info>BTC</Info>
+    </Convert>
+    </Coin>
+  <Coin>
+    <Id>1831</Id>
+    <Name>Bitcin Cash</Name>
+    <Tag>BCH</Tag>
+    <Convert>
+      <Info>CNY</Info>
+      <Info>BTC</Info>
+      <Info>ETH</Info>
+    </Convert>
+    </Coin>
+</CoinCollection>

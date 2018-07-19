@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package proto;
+
+import "common.proto";
+
+/**
+* 自动更新服务
+*/
+service AutoJobService {
+    //自动更新项目状态 - GET
+    rpc UpdateProjectsStatus (Empty) returns (Empty) {}
+
+    //自动更新阶段状态 - GET
+    rpc UpdateStagesStatus (Empty) returns (Empty) {}
+
+    //自动更新订单状态 - GET
+    rpc UpdateOtcDetailsStatus (Empty) returns (Empty) {}
+}

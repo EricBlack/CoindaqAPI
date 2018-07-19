@@ -1,0 +1,59 @@
+syntax="proto3";
+
+package proto;
+
+//整形Bool值类型
+enum BoolValue {
+    BNotSet = 0;
+    True = 1;
+    False = 2;
+}
+
+//二次验证类型
+enum FactorType {
+    NotSet = 0;
+    EmailAuthType = 1;	//Email验证
+    PhoneAuthType = 2; //手机验证
+    GoogleAuthType = 3; //Google验证
+}
+
+//Kyc级别类型
+enum KycStage {
+    KNotSet = 0;
+    KycStageOne = 1; //一级认证
+    KycStageTwo = 2; //二级认证
+    KycStageTree = 3; //三级认证
+}
+
+//Kyc审核状态
+enum KycState {
+    KSNotSet = 0; //审核中
+    Passed = 1; //审核通过
+    Rejected = 2; //审核拒绝
+}
+
+//用户类型
+enum UserKind {
+    UNotSet = 0;
+    UserKindPerson = 1;	//普通用户
+    UserKindCompany = 2; //公司用户
+}
+
+//证件类型
+enum IdentityType {
+    INotSet = 0;
+    IdentificationCard = 1; //身份证
+    PassportCard = 2; //护照
+    OtherCard = 3; //其他
+}
+
+message Empty{}
+
+message IdReq {
+    int64 id = 1;
+}
+
+message BoolReply {
+    BoolValue result = 1;
+}
+

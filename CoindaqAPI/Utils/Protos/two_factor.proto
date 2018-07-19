@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+import  "common.proto";
+
+package proto;
+
+/**
+* 二次验证API
+*/
+service TwoFactorService {
+    /**
+    * 生成二次验证信息[POST]
+    */
+    rpc GenerateFactor (FactorReq) returns (FactorReply) {}
+
+    /**
+    * 查询二次验证信息[GET]
+    */
+    rpc QueryFactor (FactorReq) returns (FactorReply) {}
+
+    /**
+    * 更新二次查询信息[POST]
+    */
+    rpc RefreshFactor (FactorReq) returns (FactorReply) {}
+
+    /**
+    * 验证二次查询信息[POST]
+    */
+    rpc VerifyFactorCode (InfoReq) returns (VerifyReply) {}
+
+    /**
+    * 验证用户二次验证信息集合 - POST
+    */
+    rpc VerifyUserFactors (FactorListReq) returns (VerifyFactorsReply) {}
+}
+
+//Request
+
+message FactorReq {
+    int64 userId = 1;
+    FactorType type = 2; //验证类型 邮件，手机和google二次认证
+}
+
+message InfoReq {
+    int64 userId = 1;
+    FactorType type = 2; //验证类型 邮件，手机和google二次认证
+    string code =3; //验证码
+}
+
+message FactorListReq {
+    string email = 1; //用户email
+    string emailCode = 2; //Email验证码
+    string phoneCode = 3; //手机验证码
+    string googleCode = 4; //Google验证码
+}
+
+message VerifyFactorsReply {
+    string code = 1; //返回更新密码凭证信息
+}
+
+//Response
+message VerifyReply {
+    bool result =1;
+}
+
+message FactorReply {
+  int64 id = 1;
+  int64 userId = 2; //用户Id
+  string code = 3; //验证码
+  BoolValue activated = 4; //是否激活
+  string lastVerifyAt = 5; //最迟激活时间
+  string refreshedAt = 6; //刷新时间
+}

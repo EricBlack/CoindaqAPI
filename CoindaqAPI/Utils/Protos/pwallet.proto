@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package proto;
+
+import "common.proto";
+
+service PWalletService {
+  rpc CreatWalletCoin(WalletCoinRequest) returns (WalletCoinReply) {}
+  rpc UpdateWalletCoin(WalletCoinRequest) returns (Empty) {}
+  rpc EnableWalletCoinWithdraw(WalletCoinRequest) returns (Empty) {}
+  rpc DisableWalletCoinWithdraw(WalletCoinRequest) returns (Empty) {}
+  rpc EnableWalletCoinReceive(WalletCoinRequest) returns (Empty) {}
+  rpc DisableWalletCoinReceive(WalletCoinRequest) returns (Empty) {}
+  rpc GetWalletCoin(WalletCoinRequest) returns (WalletCoinReply) {}
+  rpc ListWalletCoin(Empty) returns (WalletCoinListReply) {}
+
+  rpc SyncLightWallet(SyncLightWalletRequest) returns (Empty) {}
+  rpc GetLightWallet(LightWalletRequest) returns (LightWalletCoinsReply) {}
+
+  rpc CreatePlatformWallet(PlatformWalletRequest) returns (PlatformWalletReply) {}
+  rpc GetPlatformWalletCoins(PlatformWalletRequest) returns (PlatformWalletReply) {}
+  rpc UpdatePlatformWalletCoins(UpdatePWalletRequest) returns (WalletCoin) {}
+  rpc Transfer2L(TransferRequest) returns (TransferReply) {}
+}
+
+message WalletCoin {
+  int64 id = 1;
+  string code = 2;
+  string symbol = 3;
+  string name = 4;
+  string coinType = 5;
+  int32 decimals = 6;
+  int32 minConfirms = 7;
+  string walletName = 8;
+  string path = 9;
+  string address = 10;
+}
+
+message WalletCoinRequest {
+  int64 id = 1;
+  string code = 2;
+  string symbol = 3;
+  string name = 4;
+  string coinType = 5;
+  int32 decimals = 6;
+  int32 minConfirms = 7;
+}
+
+message WalletCoinReply {
+  int64 id = 1;
+  string code = 2;
+  string symbol = 3;
+  string name = 4;
+  string coinType = 5;
+  int32 decimals = 6;
+  int32 minConfirms = 7;
+}
+
+message WalletCoinListReply {
+  repeated WalletCoinReply coins = 1;
+}
+
+message SyncLightWalletRequest {
+  int64 userId = 1;
+  string walletName = 2;
+  repeated WalletCoin coins = 3;
+}
+
+message LightWalletRequest {
+  int64 userId = 1;
+  string walletName = 2;
+}
+
+message LightWalletCoinsReply {
+  repeated WalletCoin coins = 1;
+}
+
+message PlatformWalletRequest {
+  int64 userId = 1;
+  string walletType = 2;
+}
+
+message PlatformWalletReply {
+  repeated WalletCoin coins = 1;
+}
+
+message UpdatePWalletRequest {
+  int64 userId = 1;
+  string walletType = 2;
+  string coinSymbol = 3;
+}
+
+message TransferRequest {
+  int64 userId = 1;
+  string pWalletType = 2;
+  string coinSymbol = 3;
+  string lWalletAddr = 4;
+  string amount = 5;
+}
+
+message TransferReply {
+  string txId = 1;
+}

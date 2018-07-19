@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package proto;
+
+import  "common.proto";
+
+//1.Service
+/**
+* Kyc认证API
+*/
+service KycService {
+    /**
+    * 创建Kyc记录[POST]
+    */
+    rpc CreateKyc (CreateKycReq) returns (Empty) {}
+
+    /**
+    * 查询Kyc信息[GET]
+    */
+    rpc QueryKycInfoById(IdReq) returns (KycInfoReply){}
+
+    /**
+   * 更新Kyc信息[POST]
+   */
+    rpc UpdateKycInfo(UpdateKycReq) returns (Empty){}
+
+    /**
+    * 查询最新一条记录[GET]
+    */
+    rpc QueryKycLastInfo(LatestKycReq) returns (KycInfoReply) {}
+
+    /**
+    * 筛选Kyc信息[GET]
+    */
+    rpc QueryKycInfos (FilterReq) returns (KycListReply) {}
+
+    /**
+    * 根据Id查询国家信息[GET]
+    */
+    rpc QueryCountryById(IdReq) returns (CountryInfoReply) {}
+
+    /**
+    * 查询所有国家信息[GET]
+    */
+    rpc QueryAllCountryInfo(Empty) returns (CountryListReply) {}
+}
+
+message CreateKycReq {
+    int64 userId = 1; //用户id
+    UserKind kind = 2; //用户类型
+    string realName = 3; //真实姓名
+    int32 countryCode = 4; //国家代码
+    IdentityType identityType = 5; //证件类型
+    string identityId = 6; //证件Id
+    string photoFront = 7; //证件正面照
+    string photoBack = 8; //证件背面照
+    string photoHand = 9; //证件手持照
+}
+
+message LatestKycReq {
+    int64 userId = 1; //用户Id
+    KycStage stage = 2; //审核级别
+}
+
+message UpdateKycReq {
+    int64 id = 1; //Kyc Id
+    UserKind kind = 2; //用户类型
+    string realName = 3; //真实姓名
+    int32 countryCode = 4; //国家代码
+    IdentityType identityType = 5; //证件类型
+    string identityId = 6; //证件Id
+    string photoFront = 7; //证件正面照
+    string photoBack = 8; //证件背面照
+    string photoHand = 9; //证件手持照
+}
+
+message HandleKycReq {
+    int64 id = 1; //Kyc Id
+    string reason = 2; //原因
+}
+
+message FilterReq {
+    int64 userId =1; //用户id
+    KycState state = 2; //审核状态
+}
+
+message KycReply {
+    int64 id = 1;
+}
+
+message KycInfoReply {
+    int64 id = 1; //Kyc Id
+    int64 userId = 2; //用户Id
+    UserKind kind = 3; //用户类型
+    string realName = 4; //真实姓名
+    int32 countryCode = 5; //国家代码
+    string countryName = 6; //国家名称
+    IdentityType identityType = 7; //证件类型
+    string identityId = 8; //证件Id
+    string photoFront = 9; //证件正面照
+    string photoBack = 10; //证件背面照
+    string photoHand = 11; //证件手持照
+    KycState state = 12; //审核状态
+    string reason = 13; //审核原因
+    string createTime = 14; //创建时间
+    string updateTime = 15; //更新时间
+}
+
+message KycListReply {
+    repeated KycInfoReply kycInfos = 1;
+}
+
+message CountryInfoReply {
+    int64 id = 1;
+    string countryNb = 2; //国家代号
+    string mark = 3; //国家缩写
+    string ename = 4; //英文名称
+    string cname = 5; //中文名称
+}
+
+message CountryListReply {
+    repeated CountryInfoReply CountryList = 1;  //国家列表
+}

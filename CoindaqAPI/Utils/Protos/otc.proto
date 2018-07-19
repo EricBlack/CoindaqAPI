@@ -1,0 +1,317 @@
+syntax = "proto3";
+
+package proto;
+
+import "common.proto";
+
+/**
+ * Otc Service Grpc API
+ */
+service OtcService {
+    //支付账号添加 - POST
+    rpc AddPaymentAccount(PaymentAccountReq) returns (Empty) {}
+
+    //支付账号删除 - POST
+    rpc DeletePaymentAccount(AccountFilterReq) returns (Empty) {}
+
+    //支付账号查询 - GET
+    rpc QueryPaymentAccount(AccountFilterReq) returns (AccountListReply) {}
+
+    //消息添加 - POST
+    rpc AddShortMessage(MessageReq) returns (Empty) {}
+
+    //消息列表查询 - GET
+    rpc QueryShortMessages(UserPairReq) returns (MessageListReply) {}
+
+    //交易对信息查询 - GET
+    rpc QueryCurrencyPairs(PairFilterReq) returns (CurrencyPairListReply) {}
+
+    //创建Otc订单 - POST
+    rpc CreateOtcOrder(OtcOrderReq) returns (Empty) {}
+
+    //查询广告单列表信息 - GET
+    rpc QueryOtcOrderList(OtcFilterReq) returns (OtcOrderListReply) {}
+
+    //查询广告单详细信息 - GET
+    rpc QueryOtcOrderDetails(IdReq) returns (OtcOrderReply) {}
+
+    //确认下单交易 - POST
+    rpc ConfirmDealOrder(OtcDetailReq) returns (OtcDetailsReply) {}
+
+    //取消订单 - POST
+    rpc CancelDealOrder(IdReq) returns (Empty) {}
+
+    //确认已付款 - POST
+    rpc MarkOrderPayment(MarkUserPaiedReq) returns (Empty) {}
+
+    //订单申诉 - POST
+    rpc ComplainOrderPayment(ComplainReq) returns (Empty) {}
+
+    //查询订单详细信息 - GET
+    rpc QueryOtcDetailsById(IdReq) returns (OtcDetailsReply) {}
+
+    //查询广告单关联订单信息 - GET
+    rpc QueryOtcOrderDetailsListByOtcOrderId(IdReq) returns (OtcDetailsListReply) {}
+
+    //查询用户参与订单信息 - GET
+    rpc QueryUserOrderDetailsListByFilter(OtcDetailsFilterReq) returns (OtcDetailsListReply) {}
+}
+
+/******Enum******/
+//交易类型
+enum TradeType {
+    TNotSet = 0; 
+    BuyType = 1; //购买
+    SellType = 2; //卖出
+}
+
+//广告单类型
+enum OtcStatusType {
+    CreateState = 0; //创建状态
+    TradeState = 1; //交易中状态
+    CompleteState = 2; //完成状态
+    CancleState = 3; //取消状态
+}
+
+//货币交易类型
+enum CurrencyType {
+    CTNotSet = 0;
+    LegalCoin = 1; //法币
+    DigitalCoin = 2; //币币
+}
+
+//支付方式类型
+enum AccountType {
+    AcNotSet = 0;
+    BankType = 1; //银行卡
+    WeChatType = 2; //微信
+    AliPayType = 3; //支付宝
+    PayPalType = 4; //贝宝
+}
+
+//订单状态类型
+enum OtcDetailsStatusType {
+    ODCreated = 0; //创建阶段
+    ODTimedOut = 1; //未付款过期阶段
+    ODPayed  = 2; //已付款阶段
+    ODCoined = 3; //已打币阶段
+    ODCanceled = 4; //取消阶段
+    ODAppealed = 5; //申诉阶段
+    ODCompleted = 6; //完成
+}
+
+//订单用户类型
+enum OrderPersonType {
+    OpNotSet = 0;
+    InitiatorType = 1; //发起方
+    AcceptorType = 2; //接收方
+}
+
+enum OrderStateType {
+    OsNotSet = 0;
+    OngoingType = 1; //进行中
+    CompleteType = 2; //已完成
+    CancelType = 3; //已取消
+}
+
+/******Request******/
+//收款方式信息
+message PaymentAccountReq {
+    int64 userId = 1; //用户Id
+    string accountName = 2; //姓名
+    AccountType accountType = 3; //账号类型
+    string accountNumber = 4; //账号
+    string openBank = 5; //开户银行
+    string subBank = 6; //开户支行
+    string paymentPassword = 7; //支付密码
+}
+
+//支付账号筛选信息
+message AccountFilterReq {
+    int64 userId = 1; //用户Id
+    AccountType accountType =2; //账号类型
+}
+
+//消息请求
+message MessageReq {
+    int64 userFrom = 2; //发送消息者
+    int64 userTo = 3; //接受消息者
+    string message = 4; //消息内容
+}
+
+//交易用户双方Id信息
+message UserPairReq {
+    int64 fromId = 1; //发起者用户Id 
+    int64 toId = 2; //响应者用户Id
+    int64 lastId = 3; //增量请求Id
+}
+
+//交易货币筛选对信息
+message PairFilterReq {
+    CurrencyType typeInfo = 1; //货币类型
+    string aCurrencyName = 2; //A货币名称
+    string bCurrencyName = 3; //B货币名称
+    BoolValue matchAll = 4; //是否匹配所有 
+}
+
+//Otc广告信息
+message OtcOrderReq {
+    int64 userId = 1; //用户Id
+    TradeType buySell = 2; //交易类型
+    int64 currencyPair = 3; //交易对信息
+    int64 quotePrice = 4; //报价
+    int64 quoteAmount = 5; //报单数量
+    int64 minValue = 6; //最小成交额
+    int64 maxValue = 7; //最大成交额
+    int32 expireTime = 8; //过期时间
+    int32 openLimitHour = 9; //开放小时限制
+    int32 openLimitMinute = 10; //开放分钟限制
+    int32 closeLimitHour = 11; //关闭小时限制
+    int32 closeLimitMinute = 12; //关闭分钟限制
+    BoolValue autoReply = 13; //是否自动回复
+    string autoMessage = 14; //自动回复消息
+}
+
+//Otc广告筛选信息
+message OtcFilterReq {
+    int64 userId = 1; //用户Id
+    TradeType buySell = 2; //交易类型
+    int64 currencyPairId = 3; //交易对Id
+    BoolValue openState = 4; //是否只显示开放状态
+    OtcStatusType otcStatus = 5; //Otc订单状态
+}
+
+//Otc法币交易查询
+message OtcOrderFilter {
+    int64 currencyPairId = 1; //交易对信息
+    TradeType tradeType = 2; //交易类型
+}
+
+//Otc下单交易
+message OtcDetailReq {
+    int64 userId = 1; //参与用户Id
+    int64 otcOrderId = 2; //Otc广告单Id
+    int64 buyAmount = 3; //买入数量
+    int64 payAmount = 4; //付出数量
+}
+
+//订单标记信息
+message MarkUserPaiedReq {
+    int64 userId = 1; //用户Id
+    int64 orderDetailId = 2; //订单Id
+    OrderPersonType personType = 3; //用户类别
+}
+
+//订单申诉
+message ComplainReq {
+    int64 userId = 1; //用户Id
+    int64 orderDetailId = 2; //订单Id
+    OrderPersonType personType = 3; //用户类别
+    string message = 4; //申诉信息
+}
+
+message OtcDetailsFilterReq {
+    int64 userId = 1;
+    OrderStateType state = 2;
+}
+/******Response******/
+//收款方式
+message AccountReply {
+    int64 id = 1;
+    int64 userId = 2; //用户Id
+    string accountName = 3; //姓名
+    AccountType accountType = 4; //账号类型
+    string accountNumber = 5; //账号
+    string openBank = 6; //开户银行
+    string subBank = 7; //开户支行
+    BoolValue isDeleted = 8; //是否已删除
+    string createTime = 9; //创建时间
+    string updateTime = 10; //更新时间
+}
+
+message AccountListReply {
+    repeated AccountReply AccountList = 1;
+}
+
+//短消息
+message MessageReply {
+    int64 id = 1; 
+    int64 userFrom = 2; //发送消息者
+    int64 userTo = 3; //接受消息者
+    string message = 4; //消息内容
+    string createTime = 5; //发送时间
+}
+
+message MessageListReply {
+    repeated MessageReply MessageList = 1;
+}
+
+//货币交易对
+message CurrencyPairReply {
+    int64 id = 1;
+    string coinaId = 2; //出售货币Id
+    string coinaName = 3; //出售货币名称
+    string coinbId = 4; //募集货币Id
+    string coinbName = 5; //募集货币名称
+    int32 prioritySort = 6; //排序优先级
+    CurrencyType type = 7; //货币类型
+}
+
+message CurrencyPairListReply{
+    repeated CurrencyPairReply PairList = 1;
+}
+
+//Otc广告信息
+message OtcOrderReply {
+    int64 id = 1; 
+    int64 userId = 2; //用户Id
+    TradeType buySell = 3; //交易类型
+    CurrencyPairReply currencyPair = 4; //交易对信息
+    AccountListReply payeeAddressList = 5; //收款地址列表
+    int64 quotePrice = 6; //报价
+    int64 quoteAmount = 7; //报单数量
+    int64 leftAmount = 8; //交易剩余数量
+    int64 minValue = 9; //最小成交额
+    int64 maxValue = 10; //最大成交额
+    int32 expireTime = 11; //过期时间
+    int32 openLimitHour = 12; //开放小时限制
+    int32 openLimitMinute = 13; //开放分钟限制
+    int32 closeLimitHour = 14; //关闭小时限制
+    int32 closeLimitMinute = 15; //关闭分钟限制
+    OtcStatusType status = 16; //广告交易状态
+    BoolValue autoReply = 17; //是否自动回复
+    string autoMessage = 18; //自动回复消息
+    string createTime = 19; //创建时间
+    string updateTime = 20; //更新时间
+}
+
+message OtcOrderListReply {
+    repeated OtcOrderReply OrderList = 1;
+}
+
+//OtcDetails订单信息
+message OtcDetailsReply {
+    int64 id = 1;
+    OtcOrderReply otcOrder = 2; //广告订单信息
+    string orderOwnerName = 3; //商家用户姓名
+    string orderJoinerName = 4; //参与用户姓名
+    int64 joinUserId = 5; //参与用户Id
+    int64 buyAmount = 6; //购买数量
+    int64 payAmount = 7; //付款数量
+    string orderTime = 8; //下单时间
+    string settlementTime = 9; //结算时间
+    string settlementNote = 10; //结算备注
+    OtcDetailsStatusType status = 11; //订单状态
+    BoolValue ownerPay = 12; //商家付款
+    BoolValue joinerPay = 13; //参与者付款
+    BoolValue appealOwner = 14; //商家申诉
+    string appealOwnerMessage = 15; //商家申诉信息
+    BoolValue appealJoiner = 16; //参与者申诉
+    string appealJoinerMessage = 17; //参与者申诉信息
+    string orderNumber = 18; //订单编号
+    string updateTime = 20; //更新时间
+}
+
+message OtcDetailsListReply {
+    repeated OtcDetailsReply DetailList = 1;
+}
